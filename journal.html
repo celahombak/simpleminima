@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal — SimpleMinima Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --warm-white: #F2EFE9;
+  --bone:       #E8E4DC;
+  --linen:      #D9D3C7;
+  --raw-paper:  #C8BFA8;
+  --clay:       #A0826D;
+  --oxide:      #7A5C4F;
+  --ash:        #6B6862;
+  --iron:       #4A4845;
+  --graphite:   #2C2B29;
+  --bg:   var(--warm-white);
+  --rule: var(--linen);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--graphite);
+  font-family: 'DM Mono', monospace;
+  font-weight: 300;
+  font-size: 12.5px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(242,239,233,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--linen); }
+.nav-inner { max-width: 960px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; height: 56px; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 12px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--graphite); text-decoration: none; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--graphite); }
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+/* PAGE HEADER */
+.page-header { padding: 140px 0 72px; border-bottom: 1px solid var(--rule); animation: rise 0.9s ease both; }
+.page-eye { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--clay); margin-bottom: 28px; }
+.page-title { font-family: 'Instrument Serif', serif; font-size: clamp(44px, 7vw, 80px); font-weight: 400; line-height: 1.05; letter-spacing: -0.025em; color: var(--graphite); }
+.page-title em { font-style: italic; color: var(--clay); }
+.page-note { margin-top: 32px; font-size: 12px; color: var(--ash); max-width: 440px; line-height: 1.9; }
+
+/* JOURNAL ENTRIES
+   ─────────────────────────────────────
+   TO ADD AN ENTRY:
+   1. Drop image into images/journal/
+   2. Copy one .entry block below
+   3. Update image src, date, title, text
+   4. Done
+   ───────────────────────────────────── */
+
+/* ENTRY — FULL WIDTH (featured) */
+.entry-full {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+  animation: rise 0.8s ease both;
+}
+.entry-image-full {
+  width: 100%;
+  margin-bottom: 36px;
+}
+.entry-image-full img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+.entry-placeholder {
+  width: 100%;
+  background: var(--bone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--raw-paper);
+}
+.entry-meta {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.entry-date { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--clay); }
+.entry-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ash); }
+.entry-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--graphite);
+  margin-bottom: 24px;
+}
+.entry-title em { font-style: italic; color: var(--clay); }
+.entry-body {
+  max-width: 560px;
+  color: var(--ash);
+  line-height: 1.95;
+}
+.entry-body p + p { margin-top: 18px; }
+
+/* ENTRY — TWO COLUMN GRID */
+.entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.entry-card {
+  background: var(--warm-white);
+  padding: 48px 40px;
+}
+.entry-card:hover { background: var(--bone); }
+.entry-card-image {
+  width: 100%;
+  margin-bottom: 28px;
+}
+.entry-card-image img { width: 100%; display: block; object-fit: cover; }
+
+/* ENTRY — HORIZONTAL (text heavy) */
+.entry-horizontal {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.entry-horizontal-image {
+  width: 100%;
+}
+.entry-horizontal-image img { width: 100%; display: block; object-fit: cover; }
+
+/* ENTRY — OBSERVATION (no image, text-only) */
+.entry-observation {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.entry-obs-date-block {}
+.entry-obs-date {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--clay);
+  line-height: 1.6;
+}
+.entry-obs-body {}
+
+/* LOAD MORE / ARCHIVE NOTICE */
+.archive-note {
+  padding: 72px 0;
+  text-align: center;
+}
+.archive-note p {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--raw-paper);
+  line-height: 1.7;
+}
+
+/* FOOTER */
+.footer { padding: 64px 0; border-top: 1px solid var(--rule); }
+.footer-inner { display: flex; justify-content: space-between; align-items: end; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--graphite); margin-bottom: 8px; }
+.footer-sub { font-size: 10px; letter-spacing: 0.1em; color: var(--ash); }
+.footer-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.footer-links a { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--clay); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 700px) {
+  .nav-inner, .wrap { padding: 0 24px; }
+  .page-header { padding: 110px 0 56px; }
+  .entry-grid { grid-template-columns: 1fr; }
+  .entry-card { padding: 40px 0; background: var(--warm-white) !important; border-bottom: 1px solid var(--rule); }
+  .entry-card:last-child { border-bottom: none; }
+  .entry-horizontal { grid-template-columns: 1fr; gap: 28px; }
+  .entry-observation { grid-template-columns: 1fr; gap: 16px; }
+  .footer-inner { flex-direction: column; gap: 32px; align-items: flex-start; }
+  .footer-links { align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SimpleMinima</a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="journal.html" class="active">Journal</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="https://www.instagram.com/simpleminima/" target="_blank">Instagram</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="wrap">
+    <div class="page-eye">Studio Journal</div>
+    <h1 class="page-title">Field notes<br>& <em>observations</em></h1>
+    <p class="page-note">A record of what we make, how we make it, and what surprises us along the way.</p>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════
+     ENTRY 001 — FEATURED / FULL WIDTH
+     ──────────────────────────────────────────────
+     To add: copy this block, update content
+══════════════════════════════════════════════ -->
+<article class="entry-full">
+  <div class="wrap">
+    <div class="entry-image-full">
+      <!-- Replace with: <img src="images/journal/entry-001.jpg" alt="First print experiment"> -->
+      <div class="entry-placeholder" style="height: 500px;">
+        <span>images/journal/entry-001.jpg</span>
+      </div>
+    </div>
+    <div class="entry-meta">
+      <span class="entry-date">March 2024</span>
+      <span class="entry-tag">Print / Process</span>
+    </div>
+    <h2 class="entry-title">The first print<br><em>experiment</em></h2>
+    <div class="entry-body">
+      <p>We pulled the first screen at 4pm, just as the light shifted from direct to diffuse. The ink was slightly too thick. The edges bled by about 2mm on the left side. We printed twenty sheets and kept three.</p>
+      <p>The three we kept were not the cleanest. They were the ones where the imperfection felt like it belonged to the composition — where the bleed was not a mistake but a decision the print had made for itself.</p>
+      <p>That afternoon set something. We stopped trying to eliminate error and started trying to understand which errors were worth keeping.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ══════════════════════════════════════════════
+     ENTRIES 002 + 003 — TWO COLUMN GRID
+══════════════════════════════════════════════ -->
+<div class="entry-grid">
+  <!-- ENTRY 002 -->
+  <article class="entry-card">
+    <div class="entry-card-image">
+      <div class="entry-placeholder" style="height:280px;">
+        <span>images/journal/entry-002.jpg</span>
+      </div>
+    </div>
+    <div class="entry-meta">
+      <span class="entry-date">April 2024</span>
+      <span class="entry-tag">Material</span>
+    </div>
+    <h2 class="entry-title" style="font-size: clamp(22px, 3vw, 32px);">Testing<br>paper <em>stock</em></h2>
+    <div class="entry-body" style="font-size: 12px;">
+      <p>Twelve paper stocks tested over two weeks. Coated surface: ink sits on top, too precise. Uncoated 120gsm: absorbs unevenly in humidity. The 170gsm natural — slightly cream, slightly rough — takes ink the way linen takes dye. It resists slightly. That resistance produces something.</p>
+    </div>
+  </article>
+
+  <!-- ENTRY 003 -->
+  <article class="entry-card">
+    <div class="entry-card-image">
+      <div class="entry-placeholder" style="height:280px;">
+        <span>images/journal/entry-003.jpg</span>
+      </div>
+    </div>
+    <div class="entry-meta">
+      <span class="entry-date">April 2024</span>
+      <span class="entry-tag">Workspace</span>
+    </div>
+    <h2 class="entry-title" style="font-size: clamp(22px, 3vw, 32px);">Workspace<br><em>observation</em></h2>
+    <div class="entry-body" style="font-size: 12px;">
+      <p>The studio is a 10×12 foot room with one east-facing window. By 10am, direct light. By noon, the light goes diffuse and slightly green from the tree outside. We have stopped adjusting for this. We work in the green light and photograph in it. It is the light we have.</p>
+    </div>
+  </article>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ENTRY 004 — HORIZONTAL (image + text)
+══════════════════════════════════════════════ -->
+<article class="entry-horizontal">
+  <div class="wrap" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; padding: 72px 40px;">
+    <div class="entry-horizontal-image">
+      <div class="entry-placeholder" style="height:380px;">
+        <span>images/journal/entry-004.jpg</span>
+      </div>
+    </div>
+    <div>
+      <div class="entry-meta">
+        <span class="entry-date">May 2024</span>
+        <span class="entry-tag">Process</span>
+      </div>
+      <h2 class="entry-title">Late night<br><em>process</em></h2>
+      <div class="entry-body">
+        <p>11pm. The city goes quiet enough to hear the fan. We mix inks by weight, not by eye — but tonight we mixed by eye and got it wrong. The colour came out three tones warmer than intended.</p>
+        <p>We ran twenty sheets anyway. Twelve came out. The warmth was the best thing about them.</p>
+        <p>There is a version of this work that happens in daylight, precisely, with measurements. That version produces better results on the first attempt. This version, the one that happens when you are tired and working by instinct, produces something else — something we cannot plan for and cannot repeat.</p>
+        <p>We are trying to understand the difference between the two, and when each one is appropriate.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ══════════════════════════════════════════════
+     ENTRY 005 — OBSERVATION (text only)
+══════════════════════════════════════════════ -->
+<article class="entry-observation">
+  <div class="wrap" style="grid-column: 1 / -1; display: grid; grid-template-columns: 120px 1fr; gap: 64px; align-items: start; padding: 72px 40px; border-bottom: 1px solid var(--rule);">
+    <div class="entry-obs-date-block">
+      <div class="entry-obs-date">
+        June<br>2024
+      </div>
+    </div>
+    <div class="entry-obs-body">
+      <div class="entry-tag" style="margin-bottom: 16px;">Observation — No Image</div>
+      <h2 class="entry-title" style="font-size: clamp(22px, 3.5vw, 36px);">On the cost of<br><em>refinement</em></h2>
+      <div class="entry-body">
+        <p>We spent six hours refining a layout today. The first version, made in twenty minutes, was the strongest. We cannot explain why we kept going. Habit, probably — the assumption that more time produces better work. It does not always.</p>
+        <p>The discipline we are trying to build is knowing when to stop. The work tells you. You have to be quiet enough to hear it.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ══════════════════════════════════════════════
+     ENTRY 006 + 007 — GRID
+══════════════════════════════════════════════ -->
+<div class="entry-grid">
+  <article class="entry-card">
+    <div class="entry-card-image">
+      <div class="entry-placeholder" style="height:240px;">
+        <span>images/journal/entry-006.jpg</span>
+      </div>
+    </div>
+    <div class="entry-meta">
+      <span class="entry-date">July 2024</span>
+      <span class="entry-tag">Typography</span>
+    </div>
+    <h2 class="entry-title" style="font-size: clamp(22px, 3vw, 32px);">Character spacing<br>as <em>architecture</em></h2>
+    <div class="entry-body" style="font-size: 12px;">
+      <p>Three hours setting type. The same twelve words in eight configurations. Letter-spacing as the variable. The wider it goes, the more monumental — and the less human. We settled at 0.08em. Just beyond neutral.</p>
+    </div>
+  </article>
+
+  <article class="entry-card">
+    <div class="entry-card-image">
+      <div class="entry-placeholder" style="height:240px;">
+        <span>images/journal/entry-007.jpg</span>
+      </div>
+    </div>
+    <div class="entry-meta">
+      <span class="entry-date">August 2024</span>
+      <span class="entry-tag">Material</span>
+    </div>
+    <h2 class="entry-title" style="font-size: clamp(22px, 3vw, 32px);">Canvas, before<br><em>printing</em></h2>
+    <div class="entry-body" style="font-size: 12px;">
+      <p>Natural canvas arrives greige — not white, not cream. In afternoon light it reads as warm. Under a phone camera it reads as cold. We stopped photographing material under phone cameras. The light has to be real.</p>
+    </div>
+  </article>
+</div>
+
+<!-- ARCHIVE NOTE -->
+<div class="archive-note">
+  <div class="wrap">
+    <p>Journal updates irregularly. Follow <a href="https://www.instagram.com/simpleminima/" target="_blank" style="color: var(--clay); text-decoration: none;">@simpleminima</a> for more frequent documentation.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">SimpleMinima Studio</div>
+        <div class="footer-sub">Quiet making from Kuala Lumpur</div>
+      </div>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="products.html">Products</a>
+        <a href="https://www.instagram.com/simpleminima/" target="_blank">Instagram ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

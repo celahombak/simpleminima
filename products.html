@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — SimpleMinima Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --warm-white: #F2EFE9;
+  --bone:       #E8E4DC;
+  --linen:      #D9D3C7;
+  --raw-paper:  #C8BFA8;
+  --clay:       #A0826D;
+  --oxide:      #7A5C4F;
+  --ash:        #6B6862;
+  --iron:       #4A4845;
+  --graphite:   #2C2B29;
+  --bg:   var(--warm-white);
+  --rule: var(--linen);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--graphite);
+  font-family: 'DM Mono', monospace;
+  font-weight: 300;
+  font-size: 12.5px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(242,239,233,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--linen); }
+.nav-inner { max-width: 960px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; height: 56px; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 12px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--graphite); text-decoration: none; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--graphite); }
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+/* PAGE HEADER */
+.page-header { padding: 140px 0 72px; border-bottom: 1px solid var(--rule); animation: rise 0.9s ease both; }
+.page-eye { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--clay); margin-bottom: 28px; }
+.page-title { font-family: 'Instrument Serif', serif; font-size: clamp(44px, 7vw, 80px); font-weight: 400; line-height: 1.05; letter-spacing: -0.025em; color: var(--graphite); }
+.page-title em { font-style: italic; color: var(--clay); }
+.page-note { margin-top: 32px; font-size: 12px; color: var(--ash); max-width: 440px; line-height: 1.9; }
+
+/* STATUS BAR */
+.status-bar {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+.status-dot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ash);
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--raw-paper);
+}
+.dot.available { background: var(--oxide); }
+.dot.ongoing { background: var(--clay); }
+
+/* PRODUCT GRID
+   ─────────────────────────────────────
+   TO ADD A PRODUCT:
+   1. Copy one .product-card block
+   2. Update image src, title, desc, status
+   3. Done
+   ───────────────────────────────────── */
+.products-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.products-category {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-bottom: 40px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 32px;
+}
+
+/* ── PRODUCT CARD ──
+   Duplicate this block to add a new product */
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+.product-image-wrap {
+  width: 100%;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.product-image-wrap img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.3s;
+}
+.product-image-wrap img:hover { opacity: 0.88; }
+
+/* placeholder shown when no image */
+.product-placeholder {
+  width: 100%;
+  background: var(--bone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--raw-paper);
+}
+.product-tag {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-bottom: 10px;
+}
+.product-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--graphite);
+  margin-bottom: 10px;
+}
+.product-desc {
+  font-size: 12px;
+  color: var(--ash);
+  line-height: 1.85;
+  flex: 1;
+}
+.product-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.product-status {
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--raw-paper);
+}
+.product-status.available { color: var(--oxide); }
+.product-status.sold-out { color: var(--linen); }
+.product-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--graphite);
+  letter-spacing: 0.02em;
+}
+
+/* ENQUIRE */
+.enquire-section {
+  padding: 80px 0;
+}
+.enquire-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.enquire-heading {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--graphite);
+  margin-bottom: 24px;
+}
+.enquire-heading em { font-style: italic; color: var(--clay); }
+.enquire-text { font-size: 12px; color: var(--ash); line-height: 1.9; }
+.enquire-text p + p { margin-top: 16px; }
+.enquire-link {
+  display: inline-block;
+  margin-top: 28px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  text-decoration: none;
+  border-bottom: 1px solid var(--graphite);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.enquire-link:hover { color: var(--clay); border-color: var(--clay); }
+.enquire-meta { padding-top: 48px; }
+.enquire-meta-item {
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+}
+.enquire-meta-item:last-child { border-bottom: 1px solid var(--rule); }
+.meta-label { font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay); margin-bottom: 6px; }
+.meta-value { font-size: 12px; color: var(--ash); line-height: 1.75; }
+
+/* FOOTER */
+.footer { padding: 64px 0; border-top: 1px solid var(--rule); }
+.footer-inner { display: flex; justify-content: space-between; align-items: end; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--graphite); margin-bottom: 8px; }
+.footer-sub { font-size: 10px; letter-spacing: 0.1em; color: var(--ash); }
+.footer-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.footer-links a { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--clay); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 860px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .nav-inner, .wrap { padding: 0 24px; }
+  .page-header { padding: 110px 0 56px; }
+  .product-grid { grid-template-columns: 1fr; }
+  .enquire-inner { grid-template-columns: 1fr; gap: 0; }
+  .footer-inner { flex-direction: column; gap: 32px; align-items: flex-start; }
+  .footer-links { align-items: flex-start; }
+  .status-bar { flex-wrap: wrap; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SimpleMinima</a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="products.html" class="active">Products</a></li>
+      <li><a href="https://www.instagram.com/simpleminima/" target="_blank">Instagram</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="wrap">
+    <div class="page-eye">Products</div>
+    <h1 class="page-title">Objects<br>made with<br><em>intention.</em></h1>
+    <p class="page-note">Current production is ongoing. All objects are made in limited batches. When a run closes, it closes.</p>
+  </div>
+</header>
+
+<!-- STATUS BAR -->
+<div class="wrap">
+  <div class="status-bar">
+    <div class="status-dot"><div class="dot available"></div> Available</div>
+    <div class="status-dot"><div class="dot ongoing"></div> In Production</div>
+    <div class="status-dot"><div class="dot"></div> Closed / Archive</div>
+  </div>
+</div>
+
+<!-- PRINT / PAPER -->
+<section class="products-section">
+  <div class="wrap">
+    <div class="products-category">Print — Paper</div>
+    <div class="product-grid">
+
+      <!-- ──────────────────────────────
+           PRODUCT CARD
+           To add: copy this block,
+           update image, text, status
+           ────────────────────────────── -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <!-- Replace with: <img src="images/products/poster-001.jpg" alt="Poster 001"> -->
+          <div class="product-placeholder" style="height:320px;">
+            <span>poster-001.jpg</span>
+          </div>
+        </div>
+        <div class="product-tag">Screen Print</div>
+        <div class="product-title">Poster 001</div>
+        <p class="product-desc">Two-colour risograph on 170gsm uncoated. Typography study — character spacing as visual architecture.</p>
+        <div class="product-footer">
+          <span class="product-status available">Available</span>
+          <span class="product-price">RM 85</span>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <div class="product-placeholder" style="height:320px;">
+            <span>poster-002.jpg</span>
+          </div>
+        </div>
+        <div class="product-tag">Screen Print</div>
+        <div class="product-title">Poster 002</div>
+        <p class="product-desc">Single colour on natural stock. A grid study printed slightly off-register — the registration is intentional.</p>
+        <div class="product-footer">
+          <span class="product-status">Closed</span>
+          <span class="product-price">RM 75</span>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <div class="product-placeholder" style="height:320px;">
+            <span>print-003.jpg</span>
+          </div>
+        </div>
+        <div class="product-tag">Limited Print</div>
+        <div class="product-title">Archive Print 001</div>
+        <p class="product-desc">Photographic print, studio documentation series. From the first print session, 2024.</p>
+        <div class="product-footer">
+          <span class="product-status available">Available — 4 remaining</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GARMENTS -->
+<section class="products-section">
+  <div class="wrap">
+    <div class="products-category">Garment — Fabric</div>
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <div class="product-placeholder" style="height:360px;">
+            <span>tote-001.jpg</span>
+          </div>
+        </div>
+        <div class="product-tag">Tote</div>
+        <div class="product-title">Tote Bag 001</div>
+        <p class="product-desc">Natural canvas, single-colour screen print. The mark is small — 4cm wide, positioned low on the front face.</p>
+        <div class="product-footer">
+          <span class="product-status ongoing">In Production</span>
+          <span class="product-price">RM 55</span>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <div class="product-placeholder" style="height:360px;">
+            <span>tee-001.jpg</span>
+          </div>
+        </div>
+        <div class="product-tag">Garment</div>
+        <div class="product-title">Typography Tee 001</div>
+        <p class="product-desc">Washed cotton, oversized fit. A monospace type composition printed in charcoal on off-white. Run of 20.</p>
+        <div class="product-footer">
+          <span class="product-status sold-out">Sold Out</span>
+          <span class="product-price">RM 120</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ENQUIRE -->
+<section class="enquire-section">
+  <div class="wrap">
+    <div class="enquire-inner">
+      <div>
+        <h2 class="enquire-heading">Enquiries &<br><em>custom orders</em></h2>
+        <div class="enquire-text">
+          <p>We occasionally accept enquiries for custom print runs, studio collaborations, or wholesale orders for independent retailers.</p>
+          <p>We respond slowly and carefully. We do not take every commission.</p>
+        </div>
+        <a href="https://www.instagram.com/simpleminima/" target="_blank" class="enquire-link">Reach via Instagram ↗</a>
+      </div>
+      <div class="enquire-meta">
+        <div class="enquire-meta-item">
+          <div class="meta-label">Production Method</div>
+          <div class="meta-value">Screen printing, risograph, photographic print</div>
+        </div>
+        <div class="enquire-meta-item">
+          <div class="meta-label">Materials</div>
+          <div class="meta-value">Uncoated stock 120–200gsm, natural canvas, washed cotton</div>
+        </div>
+        <div class="enquire-meta-item">
+          <div class="meta-label">Shipping</div>
+          <div class="meta-value">Malaysia only. Flat rate RM 8. Tracked.</div>
+        </div>
+        <div class="enquire-meta-item">
+          <div class="meta-label">Returns</div>
+          <div class="meta-value">All sales final. Handmade goods vary — minor imperfections are inherent and expected.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">SimpleMinima Studio</div>
+        <div class="footer-sub">Quiet making from Kuala Lumpur</div>
+      </div>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="products.html">Products</a>
+        <a href="https://www.instagram.com/simpleminima/" target="_blank">Instagram ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
